@@ -7,9 +7,15 @@ const titulo = document.querySelector('.app__title');
 const botones = document.querySelectorAll('.app__card-button');
 const inputEnfoqueMusica = document.querySelector('#alternar-musica');
 const musica = new Audio('./sonidos/luna-rise-part-one.mp3');
+const sonidoBeep = new Audio('./sonidos/beep.mp3');
+const sonidoPause = new Audio('./sonidos/pause.mp3');
+const sonidoPlay = new Audio('./sonidos/play.wav');
 const botonIniciarPausar = document.querySelector('#start-pause');
+const textoIniciarPausar = document.querySelector('#start-pause span');
+const iconoPlayPause = document.querySelector('.app__card-primary-butto-icon');
+const tiempoEnPantalla = document.querySelector('#timer');
 
-let tiempoTranscurridoSegundos = 5;
+let tiempoTranscurridoSegundos = 1500;
 let idIntervalo = null;
 
 
@@ -69,24 +75,41 @@ function cambiarContexto(contexto){
 
 const cuentaRegresiva = ()=>{
     if(tiempoTranscurridoSegundos<=0){
-        reiniciar();
+        sonidoBeep.play();
         alert('Tiempo finalizado');
-        return
+        reiniciar();
+        return;
     }
-    tiempoTranscurridoSegundos -=1
-    console.log("Temporizador: "+tiempoTranscurridoSegundos);
+    textoIniciarPausar.textContent = "Pausar";
+    tiempoTranscurridoSegundos -=1;
+    mostrarTiempo();
     
 }
 
 botonIniciarPausar.addEventListener('click', iniciarPausar);
+
 function iniciarPausar() {
     if(idIntervalo){
+        iconoPlayPause.setAttribute('src', `./imagenes/play_arrow.png`);
+        sonidoPause.play();
         reiniciar();
         return;
     }
-    idIntervalo = setInterval(cuentaRegresiva,1000)
+    iconoPlayPause.setAttribute('src', `./imagenes/pause.png`);
+    sonidoPlay.play();
+    idIntervalo = setInterval(cuentaRegresiva,1000);
 }
 function reiniciar(){
     clearInterval(idIntervalo);
     idIntervalo= null;
+    textoIniciarPausar.textContent= "Comenzar";
+    iconoPlayPause.setAttribute('src', `./imagenes/play_arrow.png`);
 }
+
+function mostrarTiempo() {
+    const tiempo = tiempoTranscurridoSegundos;
+    tiempoEnPantalla.innerHTML = `${tiempo}`;
+    
+    
+}
+mostrarTiempo();
